@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PublishBasedOnEnv.Models;
 
@@ -12,14 +14,20 @@ namespace PublishBasedOnEnv.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        public IWebHostEnvironment _env;
+        public IConfiguration _configuration;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration, IWebHostEnvironment env)
         {
             _logger = logger;
+            _env = env;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
         {
+            ViewBag.Env = _env.EnvironmentName;
+            ViewBag.SampleValueInAppSetting = _configuration.GetSection("Text").Value;
             return View();
         }
 
